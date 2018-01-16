@@ -8,59 +8,42 @@
 	<!-- Display Validation Errors -->
 	@include('common.errors')
 	<!-- New Task Form -->
-	<form action="{{ url('task') }}" method="POST" class="form-horizontal">
-		{{ csrf_field() }}
-
-		<!-- Task Name -->
-		<div class="form-group">
-			<label for="task" class="col-sm-12 control-label" style="padding: 0; font-weight: bold; font-size: 20px;">Task</label>
-			<div class="col-sm-12" style="padding: 0;">
-				<input type="text" name="name" id="task-name" class="form-control">
-			</div>
+	<h3>{{ trans('messages.titleadd') }}</h3>
+	{{ Form::open(['action' => 'taskcontroller@addtask']) }}
+		{{ Form::text('name', null,['class' => 'form-control']) }}
+		<div class	="form-group" style="margin-top: 10px;">
+		{{ Form::submit( trans('messages.Add'),['class' => 'btn btn-default']) }}
 		</div>
-		<!-- Add Task Button -->
-		<div class="form-group">
-			<div class="col-sm-offset-12 col-sm-12" style="padding: 0;">
-				<button type="submit" class="btn btn-default">
-					<i class="fa fa-plus"></i> Add Task
-				</button>
-			</div>
-		</div>
-	</form>
+	{{ Form::close() }}
 </div>
-@if (count($tasks) > 0)
+@if (count($tasks))
 	<div class="panel panel-default">
-		<div class="panel-heading">
-			Current Tasks
-		</div>
-
+		<h3>{{ trans('messages.titletable') }}</h3>
 		<div class="panel-body">
-			<table class="table table-striped task-table">
+			<table class="table task-table">
 				<!-- Table Headings -->
-				<thead>
-					<th>Task</th>
-					<th>&nbsp;</th>
+				<thead class="thead-dark">
+					<tr>
+						<th>{{ trans('messages.title') }}</th>
+						<th>&nbsp;</th>
+					</tr>
 				</thead>
 				<!-- Table Body -->
-				<tbody>
-					@foreach ($tasks as $task)
-					<tr>
-						<!-- Task Name -->
-						<td class="table-text">
-							<div>{{ $task->name }}</div>
-						</td>
-						<td>
-							<form action="{{ url('task/'.$task->id) }}" method="POST">
-								{{ csrf_field() }}
-								{{ method_field('DELETE') }}
-								<button type="submit" class="btn btn-danger" style="float: right;">
-									<i class="fa fa-trash"></i> Delete
-								</button>
-							</form>
-						</td>
-					</tr>
-					@endforeach
-				</tbody>
+				@foreach ($tasks as $task)
+				<tr>
+					<!-- Task Name -->
+					<td class="table-text">
+						<div>{{ $task->name }}</div>
+					</td>
+					<td style="text-align: right;">
+						{{ Form::open(['action' => ['taskcontroller@deletetask', $task->id]]) }}
+						{{ Form::hidden('_method', 'DELETE') }}
+						{{ Form::submit( trans('messages.delete'),['class' => 'btn btn-danger']) }}
+						{{ Form::close() }}
+					</td>
+				</tr>
+				@endforeach
+
 			</table>
 		</div>
 	</div>
