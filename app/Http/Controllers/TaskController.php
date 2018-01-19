@@ -1,24 +1,39 @@
 <?php
-
+        
 namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
+use Auth;
 use App\Http\Requests\Requestname;
+use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
     /**
+     * [__construct description]
+     * @param TaskRepository $tasks [description]
+     */
+    public function __construct(TaskRepository $tasks)
+    {
+        $this->middleware('auth');
+        $this->tasks = $tasks;
+    }
+    /**
      * [index task]
      * @return [type] [description]
      */
-    public function index()
+    public function index(Request $request)
     {
-       $tasks = Task::orderBy('created_at', 'asc') -> get();
-       
-       return view('tasks', compact('tasks'));
+        if (Auth::check()) {
+            $tasks = $this->tasks->forUser($request->user());
+            
+            return view('tasks', compact('tasks'));
+        }
+
+        return redirect()->route('task.index');
     }
     /**
      * [store task]
@@ -28,9 +43,9 @@ class TaskController extends Controller
     public function store(Requestname $request)
     {
         try {
-            $task = new Task;
-            $task->name = $request->name;
-            $task->save();
+            $request->user()->tasks()->create([
+               'name' => $request->input('name'),
+            ]);
 
             return redirect()->route('task.index');
         } catch (Exception $e) {

@@ -9,7 +9,7 @@
             {{ Form::open(['route' => 'task.index']) }}
                 {{ Form::text('name', null, ['class' => 'form-control']) }}
                 <div class="form-group">
-                    {{ Form::submit( trans('messages.Add'), ['class' => 'btn btn-default']) }}
+                    {{ Form::submit( trans('messages.Add'), ['class' => 'btn btn-default fa fa-plus']) }}
                 </div>
             {{ Form::close() }}
         </div>
@@ -35,7 +35,7 @@
                             <td class="td_last">
                                 {{ Form::open(['route' => ['task.destroy', $task->id]]) }}
                                     {{ Form::hidden('_method', 'DELETE') }}
-                                    {{ Form::submit( trans('messages.delete'), ['class' => 'btn btn-danger']) }}
+                                    {{ Form::submit( trans('messages.delete'), ['class' => 'btn btn-danger fa-trash']) }}
                                 {{ Form::close() }}
                             </td>
                         </tr>
